@@ -16,3 +16,24 @@ sam deploy --guided
 ```
 
 You can find your API Gateway Endpoint URL in the output values displayed after deployment.
+
+## Add policy to `ThumbnailGeneratorFunctionRole.Arn` Role to get `s3:GetObject` and `s3:utObject` access
+
+```json
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "Statement1",
+            "Effect": "Allow",
+            "Action": [
+                "s3:GetObject",
+                "s3:PutObject"
+            ],
+            "Resource": [
+                "arn:aws:s3:::storitmp/*"
+            ]
+        }
+    ]
+}
+```
