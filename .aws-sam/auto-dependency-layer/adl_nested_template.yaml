@@ -1,0 +1,23 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: AWS SAM CLI Nested Stack for Auto Dependency Layer Creation
+Metadata:
+  SamCliInfo: 1.115.0
+  key: AWS SAM CLI sync command
+Outputs:
+  ThumbnailGeneratorFunction026c9b48DepLayer:
+    Value:
+      Ref: ThumbnailGeneratorFunction026c9b48DepLayer
+Resources:
+  ThumbnailGeneratorFunction026c9b48DepLayer:
+    Metadata:
+      CreatedBy: AWS SAM CLI sync command
+    Properties:
+      CompatibleRuntimes:
+      - python3.9
+      ContentUri: /Users/omar/Library/CloudStorage/GoogleDrive-omar.ruiz.macias@gmail.com/Other
+        computers/My MacBook Air/projects/bin_job_applications/sam-app/.aws-sam/auto-dependency-layer/ThumbnailGeneratorFunction026c9b48DepLayer
+      Description: Auto created layer for dependencies of function ThumbnailGeneratorFunction
+      LayerName: sam-app7427b055-ThumbnailGeneratorFunc026c9b48-DepLayer
+      RetentionPolicy: Delete
+    Type: AWS::Serverless::LayerVersion
+Transform: AWS::Serverless-2016-10-31

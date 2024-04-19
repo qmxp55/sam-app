@@ -1,0 +1,85 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: 'sam-app
+
+  '
+Globals:
+  Function:
+    Timeout: 10
+    MemorySize: 128
+Resources:
+  StoritmpBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: storitmp
+  ThumbnailGeneratorFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ThumbnailGeneratorFunction
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Architectures:
+      - x86_64
+      Events:
+        ThumbnailGenerator:
+          Type: Api
+          Properties:
+            Path: /hello
+            Method: get
+        MyS3Event:
+          Type: S3
+          Properties:
+            Bucket:
+              Ref: StoritmpBucket
+            Events: s3:ObjectCreated:*
+            Filter:
+              S3Key:
+                Rules:
+                - Name: prefix
+                  Value: inputs/
+                - Name: suffix
+                  Value: .jpg
+      Layers:
+      - Fn::GetAtt:
+        - AwsSamAutoDependencyLayerNestedStack
+        - Outputs.ThumbnailGeneratorFunction026c9b48DepLayer
+    Metadata:
+      SamResourceId: ThumbnailGeneratorFunction
+  ApplicationResourceGroup:
+    Type: AWS::ResourceGroups::Group
+    Properties:
+      Name:
+        Fn::Sub: ApplicationInsights-SAM-${AWS::StackName}
+      ResourceQuery:
+        Type: CLOUDFORMATION_STACK_1_0
+  ApplicationInsightsMonitoring:
+    Type: AWS::ApplicationInsights::Application
+    Properties:
+      ResourceGroupName:
+        Ref: ApplicationResourceGroup
+      AutoConfigurationEnabled: 'true'
+  AwsSamAutoDependencyLayerNestedStack:
+    DeletionPolicy: Delete
+    Metadata:
+      CreatedBy: AWS SAM CLI sync command
+    Properties:
+      TemplateURL: /Users/omar/Library/CloudStorage/GoogleDrive-omar.ruiz.macias@gmail.com/Other
+        computers/My MacBook Air/projects/bin_job_applications/sam-app/.aws-sam/auto-dependency-layer/adl_nested_template.yaml
+    Type: AWS::CloudFormation::Stack
+Outputs:
+  ThumbnailGeneratorApi:
+    Description: API Gateway endpoint URL for Prod stage for Thumbnail Generator function
+    Value:
+      Fn::Sub: https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello/
+  ThumbnailGeneratorFunction:
+    Description: Thumbnail Generator Lambda Function ARN
+    Value:
+      Fn::GetAtt:
+      - ThumbnailGeneratorFunction
+      - Arn
+  ThumbnailGeneratorFunctionIamRole:
+    Description: Implicit IAM Role created for Thumbnail Generator function
+    Value:
+      Fn::GetAtt:
+      - ThumbnailGeneratorFunctionRole
+      - Arn
